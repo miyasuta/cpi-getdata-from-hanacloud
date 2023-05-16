@@ -1,0 +1,37 @@
+CREATE SCHEMA "MY_USERS";
+
+CREATE SEQUENCE "MY_USERS"."UserIDSequence"
+    START WITH 1
+    INCREMENT BY 1
+    NO CYCLE
+    NO MAXVALUE
+    NO MINVALUE;
+    
+CREATE COLUMN TABLE "MY_USERS"."User" (
+    UserID INTEGER,
+    FirstName NVARCHAR(50),
+    LastName NVARCHAR(50),
+    Email NVARCHAR(100),
+    PhoneNumber NVARCHAR(20),
+    PRIMARY KEY (UserID)
+);
+
+CREATE PROCEDURE "MY_USERS"."InsertUsers"(IN p_Count INTEGER)
+LANGUAGE SQLSCRIPT
+AS
+BEGIN
+    DECLARE i INTEGER := 1;
+    
+    WHILE i <= p_Count DO
+        INSERT INTO "MY_USERS"."User" (UserID, FirstName, LastName, Email, PhoneNumber)
+        VALUES ("MY_USERS"."UserIDSequence".nextval, 'FirstName' || i, 'LastName' || i, 'email' || i || '@example.com', '123456789');
+        
+        i := i + 1;
+    END WHILE;
+END;
+
+CALL "MY_USERS"."InsertUsers"(50000);
+
+select * from "MY_USERS"."User";
+
+select count(*) from "MY_USERS"."User";
